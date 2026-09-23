@@ -354,6 +354,7 @@ function logout() {
 }
 
 function showAuthPage() {
+    window.scrollTo(0, 0);
     authPage.classList.add('active');
     appPage.classList.remove('active');
     loginForm.reset();

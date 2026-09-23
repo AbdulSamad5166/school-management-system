@@ -20,6 +20,16 @@
     --border-radius: 8px;
     --box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
     --transition: all 0.3s ease;
+    --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    --secondary-gradient: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    --success-gradient: linear-gradient(135deg, #00d2fc 0%, #3677ff 100%);
+    --danger-gradient: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+    --glass-bg: rgba(255, 255, 255, 0.1);
+    --glass-border: rgba(255, 255, 255, 0.2);
+    --neon-pink: #ff006e;
+    --neon-cyan: #00f5ff;
+    --neon-purple: #b537f2;
+    --neon-green: #39ff14;
 }
 
 html, body {
@@ -959,6 +969,447 @@ html, body {
     .table-container,
     .form {
         padding: 15px;
+    }
+}
+
+/* ============================
+   MODERN NEON GLASS DESIGN
+   ============================ */
+
+html,
+body {
+    min-height: 100vh;
+    background: #100026;
+    color: rgba(255, 255, 255, 0.88);
+}
+
+body {
+    background: linear-gradient(-45deg, #1a0033, #330066, #0d0033, #1a1a4d);
+    background-size: 400% 400%;
+    animation: gradient 15s ease infinite;
+}
+
+@keyframes gradient {
+    0%, 100% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+}
+
+@keyframes glow {
+    0%, 100% { box-shadow: 0 0 20px rgba(0, 245, 255, 0.35); }
+    50% { box-shadow: 0 0 40px rgba(0, 245, 255, 0.65), 0 0 60px rgba(181, 55, 242, 0.3); }
+}
+
+@keyframes pulse-glow {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.8; }
+}
+
+@keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-5px); }
+}
+
+@keyframes slide-in {
+    from { opacity: 0; transform: translateX(-30px); }
+    to { opacity: 1; transform: translateX(0); }
+}
+
+.auth-page {
+    background: linear-gradient(-45deg, #1a0033, #330066, #0d0033, #1a1a4d);
+    background-size: 400% 400%;
+    animation: gradient 15s ease infinite;
+}
+
+.auth-box,
+.form,
+.table-container,
+.recent-section,
+.search-container,
+.filter-section,
+.summary-card,
+.profile-card {
+    background: rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(14px);
+    border: 2px solid rgba(0, 245, 255, 0.2);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2), inset 0 0 20px rgba(255, 255, 255, 0.05);
+}
+
+.auth-box {
+    padding: 50px;
+    border-radius: 20px;
+    box-shadow: 0 8px 32px rgba(0, 255, 255, 0.2), 0 0 50px rgba(255, 0, 150, 0.1), inset 0 0 20px rgba(255, 255, 255, 0.1);
+}
+
+.auth-title,
+.header h2,
+.form h4 {
+    background: linear-gradient(135deg, var(--neon-cyan), var(--neon-purple), var(--neon-pink));
+    background-clip: text;
+    -webkit-background-clip: text;
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+    text-shadow: 0 0 30px rgba(0, 245, 255, 0.35);
+}
+
+.auth-title {
+    font-size: 32px;
+    font-weight: 800;
+}
+
+.auth-form h2,
+.section-header h3,
+.recent-section h3,
+.form h4 {
+    color: var(--neon-cyan);
+}
+
+.auth-toggle {
+    border-bottom-color: rgba(255, 255, 255, 0.2);
+}
+
+.toggle-btn {
+    position: relative;
+    overflow: hidden;
+    padding: 12px 20px;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.05);
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.toggle-btn::before,
+.btn::before {
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    content: '';
+    background: rgba(255, 255, 255, 0.25);
+    transition: left 0.5s;
+}
+
+.toggle-btn:hover::before,
+.btn:hover::before {
+    left: 100%;
+}
+
+.toggle-btn.active {
+    border-color: var(--neon-cyan);
+    background: linear-gradient(135deg, var(--neon-cyan), var(--neon-purple));
+    color: white;
+    box-shadow: 0 0 20px rgba(0, 245, 255, 0.6), 0 0 40px rgba(181, 55, 242, 0.4);
+}
+
+.form-group label,
+.filter-section label,
+.search-filters label {
+    color: var(--neon-cyan);
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea,
+.search-input,
+.filter-section select {
+    border: 2px solid rgba(0, 245, 255, 0.3);
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.05);
+    color: white;
+    backdrop-filter: blur(10px);
+}
+
+.form-group input::placeholder,
+.search-input::placeholder {
+    color: rgba(255, 255, 255, 0.5);
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus,
+.search-input:focus,
+.filter-section select:focus {
+    border-color: var(--neon-cyan);
+    background: rgba(255, 255, 255, 0.1);
+    box-shadow: 0 0 20px rgba(0, 245, 255, 0.5), inset 0 0 20px rgba(0, 245, 255, 0.1);
+}
+
+option {
+    background: #241044;
+    color: white;
+}
+
+.sidebar {
+    border-right: 2px solid rgba(0, 245, 255, 0.2);
+    background: rgba(17, 6, 43, 0.88);
+    backdrop-filter: blur(14px);
+    box-shadow: inset -2px 0 20px rgba(0, 0, 0, 0.3);
+}
+
+.sidebar-header {
+    background: var(--primary-gradient);
+    border-bottom: 2px solid var(--neon-cyan);
+    box-shadow: 0 0 30px rgba(102, 126, 234, 0.3);
+}
+
+.sidebar-header h1 {
+    color: white;
+    text-shadow: 0 0 20px rgba(0, 245, 255, 0.5);
+}
+
+.nav-btn {
+    background: rgba(255, 255, 255, 0.05);
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.nav-btn:hover {
+    border-left-color: var(--neon-cyan);
+    background: rgba(0, 245, 255, 0.1);
+    color: var(--neon-cyan);
+    box-shadow: inset 0 0 20px rgba(0, 245, 255, 0.1);
+}
+
+.nav-btn.active {
+    border-left-color: var(--neon-cyan);
+    background: linear-gradient(90deg, rgba(0, 245, 255, 0.2), rgba(181, 55, 242, 0.2));
+    color: white;
+    box-shadow: 0 0 20px rgba(0, 245, 255, 0.3), inset 0 0 20px rgba(0, 245, 255, 0.1);
+}
+
+.main-content,
+.pages-container {
+    background: transparent;
+}
+
+.header {
+    border-bottom: 2px solid rgba(0, 245, 255, 0.2);
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(12px);
+    box-shadow: 0 0 30px rgba(0, 245, 255, 0.1);
+}
+
+#user-info {
+    border: 1px solid rgba(0, 245, 255, 0.35);
+    background: rgba(0, 245, 255, 0.1);
+    color: var(--neon-cyan);
+    box-shadow: 0 0 15px rgba(0, 245, 255, 0.15);
+}
+
+.stat-card {
+    position: relative;
+    overflow: hidden;
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    border-radius: 16px;
+    background: rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(12px);
+    box-shadow: 0 8px 32px rgba(0, 255, 255, 0.1), inset 0 0 20px rgba(255, 255, 255, 0.05);
+    animation: float 4s ease-in-out infinite;
+}
+
+.stat-card:nth-child(even) {
+    animation-delay: 0.5s;
+}
+
+.stat-card:hover {
+    border-color: var(--neon-cyan);
+    box-shadow: 0 0 40px rgba(0, 245, 255, 0.4), 0 15px 40px rgba(0, 0, 0, 0.2);
+}
+
+.stat-card h3 {
+    color: rgba(255, 255, 255, 0.65);
+    letter-spacing: 2px;
+}
+
+.stat-number {
+    background: linear-gradient(135deg, var(--neon-cyan), var(--neon-purple));
+    background-clip: text;
+    -webkit-background-clip: text;
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+    font-size: 36px;
+    font-weight: 800;
+}
+
+.table-container,
+.recent-section,
+.search-container,
+.filter-section,
+.summary-card {
+    border-radius: 16px;
+}
+
+.table thead {
+    background: linear-gradient(90deg, rgba(102, 126, 234, 0.35), rgba(181, 55, 242, 0.35));
+    border-bottom: 2px solid rgba(0, 245, 255, 0.3);
+}
+
+.table th {
+    color: var(--neon-cyan);
+    text-shadow: 0 0 10px rgba(0, 245, 255, 0.5);
+    letter-spacing: 1px;
+}
+
+.table td {
+    color: rgba(255, 255, 255, 0.82);
+}
+
+.table tbody tr:hover {
+    background: rgba(0, 245, 255, 0.1);
+    box-shadow: inset 0 0 20px rgba(0, 245, 255, 0.1);
+}
+
+.btn {
+    position: relative;
+    overflow: hidden;
+    border-radius: 12px;
+    letter-spacing: 1px;
+    z-index: 0;
+}
+
+.btn-primary {
+    background: var(--primary-gradient);
+    box-shadow: 0 0 20px rgba(102, 126, 234, 0.5);
+    animation: pulse-glow 3s ease-in-out infinite;
+}
+
+.btn-primary:hover {
+    background: var(--primary-gradient);
+    box-shadow: 0 0 40px rgba(102, 126, 234, 0.8), 0 10px 30px rgba(102, 126, 234, 0.3);
+}
+
+.btn-success {
+    background: var(--success-gradient);
+    box-shadow: 0 0 20px rgba(0, 210, 252, 0.5);
+}
+
+.btn-success:hover {
+    background: var(--success-gradient);
+    box-shadow: 0 0 40px rgba(0, 210, 252, 0.8), 0 10px 30px rgba(0, 210, 252, 0.3);
+}
+
+.btn-danger {
+    background: var(--danger-gradient);
+    box-shadow: 0 0 20px rgba(250, 112, 154, 0.5);
+}
+
+.btn-danger:hover {
+    background: var(--danger-gradient);
+    box-shadow: 0 0 40px rgba(250, 112, 154, 0.8), 0 10px 30px rgba(250, 112, 154, 0.3);
+}
+
+.btn-warning {
+    background: var(--secondary-gradient);
+    box-shadow: 0 0 20px rgba(240, 147, 251, 0.5);
+}
+
+.btn-warning:hover {
+    background: var(--secondary-gradient);
+    box-shadow: 0 0 40px rgba(240, 147, 251, 0.8), 0 10px 30px rgba(240, 147, 251, 0.3);
+}
+
+.btn-secondary {
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+    backdrop-filter: blur(10px);
+}
+
+.btn-secondary:hover {
+    border-color: var(--neon-cyan);
+    background: rgba(255, 255, 255, 0.2);
+    box-shadow: 0 0 20px rgba(0, 245, 255, 0.4);
+}
+
+.status-badge {
+    border: 2px solid currentColor;
+    padding: 8px 14px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    box-shadow: 0 0 15px currentColor;
+}
+
+.status-present,
+.status-pass {
+    border-color: var(--neon-green);
+    background: rgba(0, 255, 100, 0.2);
+    color: var(--neon-green);
+}
+
+.status-absent,
+.status-fail {
+    border-color: var(--neon-pink);
+    background: rgba(255, 0, 110, 0.2);
+    color: var(--neon-pink);
+}
+
+.status-paid {
+    border-color: var(--neon-cyan);
+    background: rgba(0, 210, 252, 0.2);
+    color: var(--neon-cyan);
+}
+
+.status-pending {
+    border-color: #f093fb;
+    background: rgba(240, 147, 251, 0.2);
+    color: #f093fb;
+}
+
+.profile-field label {
+    color: var(--neon-cyan);
+    text-shadow: 0 0 10px rgba(0, 245, 255, 0.3);
+}
+
+.profile-field p {
+    border: 1px solid rgba(0, 245, 255, 0.3);
+    border-radius: 10px;
+    background: rgba(0, 245, 255, 0.1);
+    color: rgba(255, 255, 255, 0.9);
+}
+
+.auth-info {
+    border-left-color: var(--neon-cyan);
+    border-radius: 12px;
+    background: rgba(0, 245, 255, 0.1);
+    box-shadow: 0 0 20px rgba(0, 245, 255, 0.2), inset 0 0 20px rgba(0, 245, 255, 0.05);
+}
+
+.auth-info p {
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.auth-info strong {
+    color: var(--neon-cyan);
+    text-shadow: 0 0 10px rgba(0, 245, 255, 0.5);
+}
+
+.error-msg {
+    color: #ff9fba;
+}
+
+@media (max-width: 768px) {
+    .auth-box {
+        padding: 30px;
+        border-radius: 20px;
+    }
+
+    .form {
+        padding: 20px;
+    }
+
+    .stat-card {
+        padding: 20px;
+        border-radius: 14px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        scroll-behavior: auto !important;
+        transition-duration: 0.01ms !important;
     }
 }
 
