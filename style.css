@@ -28,6 +28,119 @@ html, body {
     color: var(--dark-color);
 }
 
+.auth-page {
+    display: none;
+    min-height: 100vh;
+    padding: 20px;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #3498db 0%, #2c3e50 100%);
+}
+
+.auth-page.active {
+    display: flex;
+}
+
+.auth-container {
+    width: 100%;
+    max-width: 450px;
+}
+
+.auth-box {
+    padding: 40px;
+    border-radius: 15px;
+    background-color: white;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+}
+
+.auth-title {
+    margin-bottom: 30px;
+    color: var(--secondary-color);
+    text-align: center;
+    font-size: 28px;
+    letter-spacing: 1px;
+}
+
+.auth-toggle {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 30px;
+    border-bottom: 2px solid var(--light-color);
+}
+
+.toggle-btn {
+    flex: 1;
+    padding: 12px;
+    border: none;
+    border-bottom: 3px solid transparent;
+    background: transparent;
+    color: var(--gray-color);
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.toggle-btn.active {
+    border-bottom-color: var(--primary-color);
+    color: var(--primary-color);
+}
+
+.auth-form {
+    display: none;
+}
+
+.auth-form.active {
+    display: block;
+    animation: fadeIn 0.3s ease;
+}
+
+.auth-form h2 {
+    margin-bottom: 25px;
+    color: var(--secondary-color);
+    font-size: 22px;
+}
+
+.auth-info {
+    margin-top: 20px;
+    padding: 15px;
+    border-left: 4px solid var(--primary-color);
+    border-radius: 8px;
+    background-color: #f0f7ff;
+}
+
+.auth-info p {
+    margin: 5px 0;
+    color: var(--secondary-color);
+    font-size: 13px;
+}
+
+.auth-info strong {
+    color: var(--primary-color);
+}
+
+.btn-block {
+    width: 100%;
+    margin-top: 20px;
+}
+
+.app-page {
+    display: none;
+}
+
+.app-page.active {
+    display: block;
+}
+
+.admin-only.hidden,
+.student-only {
+    display: none;
+}
+
+.student-only.show {
+    display: block;
+}
+
 /* ============================
    LAYOUT - CONTAINER
    ============================ */
@@ -128,8 +241,72 @@ html, body {
 }
 
 .header-right {
+    display: flex;
+    align-items: center;
+    gap: 20px;
     font-size: 16px;
     color: var(--gray-color);
+}
+
+#user-info {
+    padding: 8px 15px;
+    border-radius: 20px;
+    background-color: var(--light-color);
+    color: var(--primary-color);
+    font-weight: 600;
+}
+
+.student-profile-container {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 20px;
+}
+
+.profile-card {
+    padding: 30px;
+    border-radius: var(--border-radius);
+    background-color: white;
+    box-shadow: var(--box-shadow);
+}
+
+.profile-card h4 {
+    margin-bottom: 25px;
+    padding-bottom: 15px;
+    border-bottom: 2px solid var(--light-color);
+    color: var(--secondary-color);
+    font-size: 20px;
+}
+
+.profile-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+    margin-bottom: 20px;
+}
+
+.profile-field {
+    display: flex;
+    flex-direction: column;
+}
+
+.profile-field.full-width {
+    grid-column: 1 / -1;
+}
+
+.profile-field label {
+    margin-bottom: 8px;
+    color: var(--gray-color);
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.profile-field p {
+    padding: 12px;
+    border-radius: 6px;
+    background-color: var(--light-color);
+    color: var(--secondary-color);
+    font-size: 16px;
 }
 
 /* ============================
@@ -729,6 +906,19 @@ html, body {
 }
 
 @media (max-width: 480px) {
+    .auth-box {
+        padding: 25px;
+    }
+
+    .auth-title {
+        font-size: 22px;
+    }
+
+    .auth-box .form-group input,
+    .auth-box .form-group select {
+        font-size: 16px;
+    }
+
     .header h2 {
         font-size: 18px;
     }
@@ -757,6 +947,12 @@ html, body {
     .nav-btn {
         padding: 8px 10px;
         font-size: 11px;
+    }
+
+    .header-right {
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 10px;
     }
 
     .recent-section,

@@ -8,6 +8,10 @@ let classes = [];
 let attendance = [];
 let fees = [];
 let results = [];
+let currentUser = null;
+let currentUserRole = null;
+let currentStudentId = null;
+let admins = [];
 let editingStudentId = null;
 let editingTeacherId = null;
 let editingClassId = null;
@@ -16,6 +20,15 @@ let editingResultId = null;
 // ============================
 // DOM ELEMENTS
 // ============================
+
+const authPage = document.getElementById('auth-page');
+const appPage = document.getElementById('app-page');
+const loginForm = document.getElementById('login-form');
+const registerForm = document.getElementById('register-form');
+const loginToggle = document.getElementById('login-toggle');
+const registerToggle = document.getElementById('register-toggle');
+const logoutBtn = document.getElementById('logout-btn');
+const userInfo = document.getElementById('user-info');
 
 // Navigation
 const navButtons = document.querySelectorAll('.nav-btn');
@@ -99,6 +112,10 @@ const searchResultsBody = document.getElementById('search-results-body');
 // ============================
 // SAMPLE DATA
 // ============================
+
+function initializeAdminAccounts() {
+    admins = [{ id: 1, email: 'admin@school.com', password: 'admin123', name: 'Admin' }];
+}
 
 function initializeSampleData() {
     const sampleStudents = [
@@ -192,6 +209,210 @@ function validateEmail(email) {
 function validatePhone(phone) {
     const phoneRegex = /^[0-9]{10,}$/;
     return phoneRegex.test(phone.replace(/[-\s]/g, ''));
+}
+
+function clearAuthErrors() {
+    document.querySelectorAll('.auth-form .error-msg').forEach(msg => msg.textContent = '');
+}
+
+function showAuthError(elementId, message) {
+    const errorEl = document.getElementById(elementId);
+    if (errorEl) errorEl.textContent = message;
+}
+
+function validateLoginForm() {
+    clearAuthErrors();
+    let isValid = true;
+    const email = document.getElementById('login-email').value.trim();
+    const password = document.getElementById('login-password').value.trim();
+
+    if (!email) {
+        showAuthError('login-email-error', 'Email is required');
+        isValid = false;
+    } else if (!validateEmail(email)) {
+        showAuthError('login-email-error', 'Valid email is required');
+        isValid = false;
+    }
+    if (!password) {
+        showAuthError('login-password-error', 'Password is required');
+        isValid = false;
+    }
+    return isValid;
+}
+
+function loginAdmin(event) {
+    event.preventDefault();
+    if (!validateLoginForm()) return;
+
+    const email = document.getElementById('login-email').value.trim().toLowerCase();
+    const password = document.getElementById('login-password').value.trim();
+    const admin = admins.find(account => account.email === email && account.password === password);
+    const student = students.find(account => account.email.toLowerCase() === email && account.password === password);
+
+    if (admin) {
+        currentUser = admin;
+        currentUserRole = 'admin';
+        currentStudentId = null;
+        saveUserSession();
+        showAdminDashboard();
+        loginForm.reset();
+    } else if (student) {
+        currentUser = student;
+        currentUserRole = 'student';
+        currentStudentId = student.id;
+        saveUserSession();
+        showStudentDashboard();
+        loginForm.reset();
+    } else {
+        showAuthError('login-password-error', 'Invalid email or password');
+    }
+}
+
+function validateRegistrationForm() {
+    clearAuthErrors();
+    let isValid = true;
+    const values = {
+        name: document.getElementById('reg-name').value.trim(),
+        father: document.getElementById('reg-father').value.trim(),
+        className: document.getElementById('reg-class').value.trim(),
+        roll: document.getElementById('reg-roll').value.trim(),
+        gender: document.getElementById('reg-gender').value,
+        age: document.getElementById('reg-age').value,
+        phone: document.getElementById('reg-phone').value.trim(),
+        email: document.getElementById('reg-email').value.trim().toLowerCase(),
+        address: document.getElementById('reg-address').value.trim(),
+        password: document.getElementById('reg-password').value.trim()
+    };
+
+    [['name', 'Name is required'], ['father', 'Father name is required'], ['className', 'Class is required'], ['roll', 'Roll number is required'], ['address', 'Address is required']].forEach(([field, message]) => {
+        if (!values[field]) { showAuthError(`reg-${field === 'className' ? 'class' : field}-error`, message); isValid = false; }
+    });
+    if (!values.gender) { showAuthError('reg-gender-error', 'Gender is required'); isValid = false; }
+    if (!values.age || Number.isNaN(Number(values.age)) || Number(values.age) < 1) { showAuthError('reg-age-error', 'Valid age is required'); isValid = false; }
+    if (!values.phone) { showAuthError('reg-phone-error', 'Phone is required'); isValid = false; }
+    else if (!validatePhone(values.phone)) { showAuthError('reg-phone-error', 'Valid phone is required'); isValid = false; }
+    if (!values.email) { showAuthError('reg-email-error', 'Email is required'); isValid = false; }
+    else if (!validateEmail(values.email)) { showAuthError('reg-email-error', 'Valid email is required'); isValid = false; }
+    else if (admins.some(account => account.email === values.email) || students.some(student => student.email.toLowerCase() === values.email)) { showAuthError('reg-email-error', 'Email is already registered'); isValid = false; }
+    if (!values.password) { showAuthError('reg-password-error', 'Password is required'); isValid = false; }
+    else if (values.password.length < 6) { showAuthError('reg-password-error', 'Password must be at least 6 characters'); isValid = false; }
+    return isValid;
+}
+
+function registerStudent(event) {
+    event.preventDefault();
+    if (!validateRegistrationForm()) return;
+
+    const newStudent = {
+        id: generateId(students),
+        name: document.getElementById('reg-name').value.trim(),
+        fatherName: document.getElementById('reg-father').value.trim(),
+        className: document.getElementById('reg-class').value.trim(),
+        rollNumber: document.getElementById('reg-roll').value.trim(),
+        gender: document.getElementById('reg-gender').value,
+        age: parseInt(document.getElementById('reg-age').value, 10),
+        phone: document.getElementById('reg-phone').value.trim(),
+        email: document.getElementById('reg-email').value.trim().toLowerCase(),
+        address: document.getElementById('reg-address').value.trim(),
+        password: document.getElementById('reg-password').value.trim()
+    };
+    students.push(newStudent);
+    fees.push({ id: generateId(fees), studentId: newStudent.id, studentName: newStudent.name, className: newStudent.className, monthlyFee: 5000, paidAmount: 0 });
+    saveToLocalStorage();
+    currentUser = newStudent;
+    currentUserRole = 'student';
+    currentStudentId = newStudent.id;
+    saveUserSession();
+    showStudentDashboard();
+    registerForm.reset();
+}
+
+function saveUserSession() {
+    localStorage.setItem('userSession', JSON.stringify({ user: currentUser, role: currentUserRole, studentId: currentStudentId }));
+}
+
+function loadUserSession() {
+    try {
+        const sessionData = JSON.parse(localStorage.getItem('userSession'));
+        if (!sessionData || !sessionData.user || !sessionData.role) return false;
+        currentUser = sessionData.user;
+        currentUserRole = sessionData.role;
+        currentStudentId = sessionData.studentId;
+        return true;
+    } catch (error) {
+        localStorage.removeItem('userSession');
+        return false;
+    }
+}
+
+function logout() {
+    currentUser = null;
+    currentUserRole = null;
+    currentStudentId = null;
+    localStorage.removeItem('userSession');
+    showAuthPage();
+}
+
+function showAuthPage() {
+    authPage.classList.add('active');
+    appPage.classList.remove('active');
+    loginForm.reset();
+    registerForm.reset();
+    clearAuthErrors();
+    loginToggle.classList.add('active');
+    registerToggle.classList.remove('active');
+    loginForm.classList.add('active');
+    registerForm.classList.remove('active');
+}
+
+function showAdminDashboard() {
+    authPage.classList.remove('active');
+    appPage.classList.add('active');
+    document.querySelectorAll('.student-only').forEach(el => el.classList.remove('show'));
+    document.querySelectorAll('.admin-only').forEach(el => el.classList.remove('hidden'));
+    userInfo.textContent = `👤 Admin: ${currentUser.name}`;
+    showPage('dashboard');
+    loadFromLocalStorage();
+    displayStudents(); displayTeachers(); displayClasses(); displayAttendance(); displayFees(); displayResults(); updateDashboard(); populateResultStudentSelect(); populateAttendanceFilter();
+}
+
+function showStudentDashboard() {
+    authPage.classList.remove('active');
+    appPage.classList.add('active');
+    document.querySelectorAll('.admin-only').forEach(el => el.classList.add('hidden'));
+    document.querySelectorAll('.student-only').forEach(el => el.classList.add('show'));
+    userInfo.textContent = `👤 Student: ${currentUser.name}`;
+    showPage('student-dashboard');
+    loadFromLocalStorage();
+    displayStudentDashboard(); displayStudentResults(); displayStudentFees();
+}
+
+function displayStudentDashboard() {
+    const student = students.find(item => item.id === currentStudentId);
+    if (!student) return;
+    const fields = { name: student.name, father: student.fatherName, class: student.className, roll: student.rollNumber, gender: student.gender, age: student.age, phone: student.phone, email: student.email, address: student.address };
+    Object.entries(fields).forEach(([field, value]) => { document.getElementById(`student-profile-${field}`).textContent = value || ''; });
+}
+
+function displayStudentResults() {
+    const body = document.getElementById('student-results-body');
+    body.innerHTML = '';
+    const studentResults = results.filter(result => result.studentId === currentStudentId);
+    if (!studentResults.length) { body.innerHTML = '<tr><td colspan="7" class="no-data">No results yet</td></tr>'; return; }
+    studentResults.forEach(result => {
+        const stats = calculateResultStats(result);
+        body.innerHTML += `<tr><td>${result.english}</td><td>${result.mathematics}</td><td>${result.computer}</td><td><strong>${stats.total}</strong></td><td><strong>${stats.percentage}%</strong></td><td><strong>${stats.grade}</strong></td><td><span class="status-badge status-${stats.status.toLowerCase()}">${stats.status.toUpperCase()}</span></td></tr>`;
+    });
+}
+
+function displayStudentFees() {
+    const body = document.getElementById('student-fees-body');
+    body.innerHTML = '';
+    const fee = fees.find(item => item.studentId === currentStudentId);
+    if (!fee) { body.innerHTML = '<tr><td colspan="4" class="no-data">No fee records</td></tr>'; return; }
+    const remaining = fee.monthlyFee - fee.paidAmount;
+    const status = fee.paidAmount >= fee.monthlyFee ? 'paid' : 'pending';
+    body.innerHTML = `<tr><td>${fee.monthlyFee}</td><td>${fee.paidAmount}</td><td>${remaining}</td><td><span class="status-badge status-${status}">${status.toUpperCase()}</span></td></tr>`;
 }
 
 // ============================
@@ -1126,7 +1347,10 @@ function showPage(pageName) {
         'attendance': 'Attendance Management',
         'fees': 'Fee Management',
         'results': 'Result Management',
-        'search': 'Search System'
+        'search': 'Search System',
+        'student-dashboard': 'My Profile',
+        'student-results': 'My Results',
+        'student-fees': 'My Fees'
     };
 
     pageTitle.textContent = titleMap[pageName] || 'Dashboard';
@@ -1147,9 +1371,33 @@ navButtons.forEach(btn => {
         } else if (pageName === 'results') {
             populateResultStudentSelect();
             displayResults();
+        } else if (pageName === 'student-results') {
+            displayStudentResults();
+        } else if (pageName === 'student-fees') {
+            displayStudentFees();
         }
     });
 });
+
+loginToggle.addEventListener('click', () => {
+    loginToggle.classList.add('active');
+    registerToggle.classList.remove('active');
+    loginForm.classList.add('active');
+    registerForm.classList.remove('active');
+    clearAuthErrors();
+});
+
+registerToggle.addEventListener('click', () => {
+    registerToggle.classList.add('active');
+    loginToggle.classList.remove('active');
+    registerForm.classList.add('active');
+    loginForm.classList.remove('active');
+    clearAuthErrors();
+});
+
+loginForm.addEventListener('submit', loginAdmin);
+registerForm.addEventListener('submit', registerStudent);
+logoutBtn.addEventListener('click', logout);
 
 // Student Events
 toggleStudentFormBtn.addEventListener('click', () => {
@@ -1209,18 +1457,16 @@ document.querySelectorAll('input[name="search-type"]').forEach(radio => {
 // ============================
 
 function initializeApp() {
+    initializeAdminAccounts();
     loadFromLocalStorage();
+    if (loadUserSession()) {
+        if (currentUserRole === 'admin') showAdminDashboard();
+        else if (currentUserRole === 'student' && students.some(student => student.id === currentStudentId)) showStudentDashboard();
+        else showAuthPage();
+    } else {
+        showAuthPage();
+    }
     updateCurrentDate();
-    showPage('dashboard');
-    displayStudents();
-    displayTeachers();
-    displayClasses();
-    displayAttendance();
-    displayFees();
-    displayResults();
-    updateDashboard();
-    populateResultStudentSelect();
-    populateAttendanceFilter();
 }
 
 // Start the application

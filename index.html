@@ -7,6 +7,36 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
+    <div id="auth-page" class="auth-page active">
+        <div class="auth-container">
+            <div class="auth-box">
+                <h1 class="auth-title">🏫 School Management System</h1>
+                <div class="auth-toggle">
+                    <button type="button" id="login-toggle" class="toggle-btn active">Login</button>
+                    <button type="button" id="register-toggle" class="toggle-btn">Register</button>
+                </div>
+                <form id="login-form" class="auth-form active">
+                    <h2>Welcome Back</h2>
+                    <div class="form-group"><label for="login-email">Email</label><input type="email" id="login-email" placeholder="admin@school.com"><span class="error-msg" id="login-email-error"></span></div>
+                    <div class="form-group"><label for="login-password">Password</label><input type="password" id="login-password" placeholder="Enter password"><span class="error-msg" id="login-password-error"></span></div>
+                    <button type="submit" class="btn btn-primary btn-block">Login</button>
+                    <div class="auth-info"><p><strong>Demo Admin:</strong></p><p>Email: admin@school.com</p><p>Password: admin123</p></div>
+                </form>
+                <form id="register-form" class="auth-form">
+                    <h2>Student Registration</h2>
+                    <div class="form-row"><div class="form-group"><label for="reg-name">Full Name</label><input type="text" id="reg-name" placeholder="Enter full name"><span class="error-msg" id="reg-name-error"></span></div><div class="form-group"><label for="reg-father">Father Name</label><input type="text" id="reg-father" placeholder="Enter father name"><span class="error-msg" id="reg-father-error"></span></div></div>
+                    <div class="form-row"><div class="form-group"><label for="reg-class">Class</label><input type="text" id="reg-class" placeholder="e.g., 9th"><span class="error-msg" id="reg-class-error"></span></div><div class="form-group"><label for="reg-roll">Roll Number</label><input type="text" id="reg-roll" placeholder="e.g., 101"><span class="error-msg" id="reg-roll-error"></span></div></div>
+                    <div class="form-row"><div class="form-group"><label for="reg-gender">Gender</label><select id="reg-gender"><option value="">Select Gender</option><option value="Male">Male</option><option value="Female">Female</option></select><span class="error-msg" id="reg-gender-error"></span></div><div class="form-group"><label for="reg-age">Age</label><input type="number" id="reg-age" min="1" placeholder="e.g., 15"><span class="error-msg" id="reg-age-error"></span></div></div>
+                    <div class="form-group"><label for="reg-phone">Phone</label><input type="text" id="reg-phone" placeholder="e.g., 03000000000"><span class="error-msg" id="reg-phone-error"></span></div>
+                    <div class="form-group"><label for="reg-email">Email</label><input type="email" id="reg-email" placeholder="student@example.com"><span class="error-msg" id="reg-email-error"></span></div>
+                    <div class="form-group"><label for="reg-address">Address</label><input type="text" id="reg-address" placeholder="Enter address"><span class="error-msg" id="reg-address-error"></span></div>
+                    <div class="form-group"><label for="reg-password">Password</label><input type="password" id="reg-password" minlength="6" placeholder="Minimum 6 characters"><span class="error-msg" id="reg-password-error"></span></div>
+                    <button type="submit" class="btn btn-success btn-block">Register</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div id="app-page" class="app-page">
     <div class="container">
         <!-- SIDEBAR NAVIGATION -->
         <aside class="sidebar">
@@ -17,27 +47,30 @@
                 <button class="nav-btn active" data-page="dashboard">
                     📊 Dashboard
                 </button>
-                <button class="nav-btn" data-page="students">
+                <button class="nav-btn admin-only" data-page="students">
                     👥 Students
                 </button>
-                <button class="nav-btn" data-page="teachers">
+                <button class="nav-btn admin-only" data-page="teachers">
                     👨‍🏫 Teachers
                 </button>
-                <button class="nav-btn" data-page="classes">
+                <button class="nav-btn admin-only" data-page="classes">
                     📚 Classes
                 </button>
-                <button class="nav-btn" data-page="attendance">
+                <button class="nav-btn admin-only" data-page="attendance">
                     ✓ Attendance
                 </button>
-                <button class="nav-btn" data-page="fees">
+                <button class="nav-btn admin-only" data-page="fees">
                     💰 Fees
                 </button>
-                <button class="nav-btn" data-page="results">
+                <button class="nav-btn admin-only" data-page="results">
                     📈 Results
                 </button>
-                <button class="nav-btn" data-page="search">
+                <button class="nav-btn admin-only" data-page="search">
                     🔍 Search
                 </button>
+                <button class="nav-btn student-only" data-page="student-dashboard">📋 My Profile</button>
+                <button class="nav-btn student-only" data-page="student-results">📈 My Results</button>
+                <button class="nav-btn student-only" data-page="student-fees">💰 My Fees</button>
             </nav>
         </aside>
 
@@ -47,7 +80,9 @@
             <header class="header">
                 <h2 id="page-title">Dashboard</h2>
                 <div class="header-right">
+                    <span id="user-info"></span>
                     <span id="current-date"></span>
+                    <button type="button" id="logout-btn" class="btn btn-danger">Logout</button>
                 </div>
             </header>
 
@@ -511,8 +546,29 @@
                     </div>
                 </section>
 
+                <section id="student-dashboard" class="page student-only">
+                    <div class="section-header"><h3>My Profile</h3></div>
+                    <div class="student-profile-container"><div class="profile-card">
+                        <h4>Student Information</h4>
+                        <div class="profile-row"><div class="profile-field"><label>Name</label><p id="student-profile-name"></p></div><div class="profile-field"><label>Father Name</label><p id="student-profile-father"></p></div></div>
+                        <div class="profile-row"><div class="profile-field"><label>Class</label><p id="student-profile-class"></p></div><div class="profile-field"><label>Roll Number</label><p id="student-profile-roll"></p></div></div>
+                        <div class="profile-row"><div class="profile-field"><label>Gender</label><p id="student-profile-gender"></p></div><div class="profile-field"><label>Age</label><p id="student-profile-age"></p></div></div>
+                        <div class="profile-row"><div class="profile-field"><label>Phone</label><p id="student-profile-phone"></p></div><div class="profile-field"><label>Email</label><p id="student-profile-email"></p></div></div>
+                        <div class="profile-row"><div class="profile-field full-width"><label>Address</label><p id="student-profile-address"></p></div></div>
+                    </div></div>
+                </section>
+                <section id="student-results" class="page student-only">
+                    <div class="section-header"><h3>My Results</h3></div>
+                    <div class="table-container"><table class="table"><thead><tr><th>English</th><th>Mathematics</th><th>Computer</th><th>Total</th><th>Percentage</th><th>Grade</th><th>Status</th></tr></thead><tbody id="student-results-body"></tbody></table></div>
+                </section>
+                <section id="student-fees" class="page student-only">
+                    <div class="section-header"><h3>My Fees</h3></div>
+                    <div class="table-container"><table class="table"><thead><tr><th>Monthly Fee</th><th>Paid Amount</th><th>Remaining</th><th>Status</th></tr></thead><tbody id="student-fees-body"></tbody></table></div>
+                </section>
+
             </div>
         </main>
+    </div>
     </div>
 
     <script src="script.js"></script>
